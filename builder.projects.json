@@ -1,10 +1,10 @@
-﻿{
-    "projects":  [
-                     {
-                         "id":  "pa8c0d15dbef",
-                         "runner":  "windows-latest",
-                         "secret_suffix":  "PA8C0D15DBEF",
-                         "rev":  "e69a3d504cde557e"
-                     }
-                 ]
+{
+  "projects": [
+    {
+      "id": "pa8c0d15dbef",
+      "runner": "windows-latest",
+      "secret_suffix": "PA8C0D15DBEF",
+      "rev": "e48fb3f141c0165f"
+    }
+  ]
 }
