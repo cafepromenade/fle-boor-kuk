@@ -152,3 +152,42 @@ jobs:
           if ($sha) { $body['sha'] = $sha.Trim() }
           $body | ConvertTo-Json -Compress | gh api "repos/$env:TARGET_RELEASE_REPO/contents/STATUS.md" -X PUT --input - | Out-Null
           Write-Host "STATUS.md -> $env:TARGET_RELEASE_REPO"
+
+  publish-release:
+    needs: [project-list, build]
+    if: ${{ success() }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        project: ${{ fromJSON(needs.project-list.outputs.projects) }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      PRIVATE_RELEASE_TOKEN: ${{ secrets.PRIVATE_RELEASE_TOKEN }}
+      TARGET_RELEASE_REPO: ${{ secrets[format('RELEASE_TARGET_{0}', matrix.project.secret_suffix)] }}
+    steps:
+      - name: Publish private release
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TARGET_RELEASE_REPO) -or
+              [string]::IsNullOrWhiteSpace($env:PRIVATE_RELEASE_TOKEN)) { throw 'missing release publishing secret' }
+          $runNumber = 0
+          if (-not [int]::TryParse($env:GITHUB_RUN_NUMBER, [ref]$runNumber)) { $runNumber = 0 }
+          $attempt = 1
+          if (-not [int]::TryParse($env:GITHUB_RUN_ATTEMPT, [ref]$attempt)) { $attempt = 1 }
+          $patch = 2000 + ($runNumber * 10) + [Math]::Max(0, $attempt - 1)
+          if ($patch -gt 65535) { throw 'public builder run number exceeded Windows version range' }
+          $tag = "v0.1.$patch"
+          $env:GH_TOKEN = $env:PRIVATE_RELEASE_TOKEN
+          $raw = gh release view $tag --repo $env:TARGET_RELEASE_REPO --json isDraft
+          if ($LASTEXITCODE -ne 0) { throw "missing release $tag" }
+          $release = $raw | ConvertFrom-Json
+          if (-not $release.isDraft) {
+            Write-Host "release already published: $tag"
+            return
+          }
+          gh release edit $tag --repo $env:TARGET_RELEASE_REPO --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw "release publish failed: $tag" }
+          Write-Host "published: $tag"
