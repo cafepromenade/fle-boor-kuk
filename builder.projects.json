@@ -1,6 +1,12 @@
 {
   "projects": [
     {
+      "id": "p60991d07656",
+      "runner": "ubuntu-latest",
+      "secret_suffix": "P60991D07656",
+      "rev": "27c5da04b02319cd"
+    },
+    {
       "id": "pa8c0d15dbef",
       "runner": "windows-latest",
       "secret_suffix": "PA8C0D15DBEF",
