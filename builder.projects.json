@@ -1,16 +1,16 @@
-{
-  "projects": [
-    {
-      "id": "p60991d07656",
-      "runner": "ubuntu-latest",
-      "secret_suffix": "P60991D07656",
-      "rev": "395aa0c122232a46"
-    },
-    {
-      "id": "pa8c0d15dbef",
-      "runner": "windows-latest",
-      "secret_suffix": "PA8C0D15DBEF",
-      "rev": "be8c3f51081e1649"
-    }
-  ]
+﻿{
+    "projects":  [
+                     {
+                         "id":  "p60991d07656",
+                         "runner":  "ubuntu-latest",
+                         "secret_suffix":  "P60991D07656",
+                         "rev":  "99a8d0e37c1d7ba1"
+                     },
+                     {
+                         "id":  "pa8c0d15dbef",
+                         "runner":  "windows-latest",
+                         "secret_suffix":  "PA8C0D15DBEF",
+                         "rev":  "be8c3f51081e1649"
+                     }
+                 ]
 }
