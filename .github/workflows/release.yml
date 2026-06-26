@@ -111,6 +111,17 @@ jobs:
           restore-keys: |
             cache-${{ matrix.project.id }}-${{ runner.os }}-
 
+      - name: Setup Java runtime
+        if: runner.os == 'Windows'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android tools
+        if: runner.os == 'Windows'
+        uses: android-actions/setup-android@v3
+
       - name: Run project body
         run: |
           $script = "workflows/$env:PROJECT_ID.ps1"
